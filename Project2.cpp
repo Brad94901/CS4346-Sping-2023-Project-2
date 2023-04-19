@@ -7,38 +7,76 @@ Implementation of the A* algorithm on the 8-square puzzle
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include <list>
+#include <Project2.h>
+using namespace std;
 
 //Some basic psuedocode to get us started
-//basic class to store the state of each node, still needs setters/getters
+//basic class to store the state of each node
 //vector of successors to this node
 //method to add successors
-//method to remove successors
 //bestnode variable
-//isGoal, checks if the current node is a goal node, returns bool
+//isGoal, checks if the current node is a goal node, returns bool 
 //parent, points to the parent node of this node, if empty node is the starting node
+//---------------------------DONE ^-----------------------------------------------------
 //g, h', f' , hueristic variables
-class PuzzleNode{ 
-	public:
-		PuzzleNode()
-		{
-			int Board[3][3] = {}
-		}
+//method to remove successors
 
-		PuzzleNode(int arr[])
-		{
-			int Board[3][3] = arr;
-		}	
+	PuzzleNode::PuzzleNode(vector<vector<int>> arr){
+		board = arr;
+		bestNode = NULL;
+		parent = NULL;
+		
+	}
 
-}
+	bool PuzzleNode::isGoal(){ //FIX THIS DOESN'T WORK
+		if(board == goal)
+			return true;
+		else
+			return false;
+	}
+
+	void PuzzleNode::setBoard(vector<vector<int>> arr){
+		board = arr;
+	}
+
+	void setBest(PuzzleNode best);{
+		bestNode = best;
+	}
+	PuzzleNode getBest(){
+		return bestNode;
+	}
+
+	void setParent(PuzzleNode par);{
+		parent = par;
+	}
+	PuzzleNode getParent(){
+		return parent;
+	}
+	
+	void addSucc(PuzzleNode succ){
+		successors.push_back(succ);
+
+	}
+	void removeSucc(PuzzleNode rsucc){
+		//Check if rsucc is in a vector and remove if so.
+
+	}
+	
 
 //object class for the puzzle data type
 int main(){
 
-	//create object for goalnode
 	//create two initial nodes
-	//vector of OPEN nodes
-	//vector of CLOSED nodes
+	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
+	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
+	PuzzleNode init_node_1(init1);
+	PuzzleNode init_node_2(init2);	
+
+	//list of OPEN nodes
+	list<PuzzleNode> OPEN;
+	//list of CLOSED nodes
+	list<PuzzleNode> CLOSED;
 	//write functions to compute hueristic values, assign to nodes
 	
 	//add initial node to OPEN
