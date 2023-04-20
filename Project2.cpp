@@ -25,8 +25,8 @@ using namespace std;
 
 	PuzzleNode::PuzzleNode(vector<vector<int>> arr){
 		board = arr;
-		bestNode = NULL;
-		parent = NULL;
+		bestNode;
+		parent;
 		
 	}
 
@@ -48,7 +48,7 @@ using namespace std;
 		return bestNode;
 	}
 
-	void setParent(PuzzleNode par);{
+	void setParent(PuzzleNode par){
 		parent = par;
 	}
 	PuzzleNode getParent(){
@@ -63,7 +63,7 @@ using namespace std;
 		//Check if rsucc is in successors and remove if so.
 		for(int i = 0; i < successors.size(); i++){
 			if (successors[i].board = rsucc.board){
-				successors.erase(successors.begin() + index);
+				successors.erase(successors.begin() + i);
 				break;
 			}
 		}
@@ -82,18 +82,18 @@ using namespace std;
 		return dist;
 	}
 
-	int x2(PuzzleNode board, int value){
+	int x2_coord(PuzzleNode board, int value){
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
 			for (int j = 0; j<3; j++){
-				if board[i][j] == value
+				if (board[i][j] == value)
 					return i;
 			}
 		}
 	}
-	int y2(PuzzleNode board, int value){
+	int y2_coord(PuzzleNode board, int value){
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
 			for (int j = 0; j<3; j++){
-				if board[i][j] == value
+				if (board[i][j] == value)
 					return j;
 			}
 		}
@@ -102,16 +102,14 @@ using namespace std;
 	int distance_m_coords(PuzzleNode node){
 		int x1, x2, y1, y2;
 		int dist;
-		goal = node.goal;
-		curr = node.board;
 
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
 			for (int j = 0; j<3; j++){
 				x1 = i;
 				y1 = j;
-				x2 = x2(node, node.board[i][j])
-				y2 = y2(node, node.board[i][j])
-				d += distance_m(int x1, int x2, int y1, int y2);
+				x2 = x2_coord(node, node.board[i][j])
+				y2 = y2_coord(node, node.board[i][j])
+				dist += distance_m(int x1, int x2, int y1, int y2);
 			}
 		}
 
@@ -132,6 +130,10 @@ int main(){
 	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
 	PuzzleNode init_node_1(init1);
 	PuzzleNode init_node_2(init2);	
+
+	vector<vector<int>> test = {{1, 0, 3}, {4, 2, 6}, {7, 8, 9}};
+	PuzzleNode testnode(test);
+	cout << distance_m_coords(testnode);
 
 	//list of OPEN nodes
 	list<PuzzleNode> OPEN;
