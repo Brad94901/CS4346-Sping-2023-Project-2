@@ -5,6 +5,7 @@ Implementation of the A* algorithm on the 8-square puzzle
 */
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <list>
@@ -76,10 +77,45 @@ using namespace std;
 
 
 	//Hueristic function Manhattan Distance/H2
-	int distance_m(PuzzleNode node){
+	int distance_m(int x1, int x2, int y1, int y2){
+		int dist = abs(x1 - x2) + abs(y1-y2);
+		return dist;
+	}
+
+	int x2(PuzzleNode board, int value){
+		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
+			for (int j = 0; j<3; j++){
+				if board[i][j] == value
+					return i;
+			}
+		}
+	}
+	int y2(PuzzleNode board, int value){
+		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
+			for (int j = 0; j<3; j++){
+				if board[i][j] == value
+					return j;
+			}
+		}
+	}
+
+	int distance_m_coords(PuzzleNode node){
+		int x1, x2, y1, y2;
 		int dist;
 		goal = node.goal;
 		curr = node.board;
+
+		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
+			for (int j = 0; j<3; j++){
+				x1 = i;
+				y1 = j;
+				x2 = x2(node, node.board[i][j])
+				y2 = y2(node, node.board[i][j])
+				d += distance_m(int x1, int x2, int y1, int y2);
+			}
+		}
+
+		return dist;
 	}
 
 
