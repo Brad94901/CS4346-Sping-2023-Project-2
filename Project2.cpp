@@ -59,12 +59,36 @@ using namespace std;
 
 	}
 	void removeSucc(PuzzleNode rsucc){
-		//Check if rsucc is in a vector and remove if so.
+		//Check if rsucc is in successors and remove if so.
+		for(int i = 0; i < successors.size(); i++){
+			if (successors[i].board = rsucc.board){
+				successors.erase(successors.begin() + index);
+				break;
+			}
+		}
 
 	}
 	
 
-//object class for the puzzle data type
+	
+	//Function to return vector of all successors
+
+
+
+	//Hueristic function Manhattan Distance/H2
+	int distance_m(PuzzleNode node){
+		int dist;
+		goal = node.goal;
+		curr = node.board;
+	}
+
+
+	//Hueristic function: Bradley Hughes
+
+
+
+	//Hueristic function: Zohair Khan
+
 int main(){
 
 	//create two initial nodes
