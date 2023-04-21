@@ -19,6 +19,7 @@ class PuzzleNode{
 		bool isGoal();
 		void setBoard(vector<vector<int>> arr);
 		void setHeur(float g_set, float h_set);
+		void printn();
 
 		void addSucc(PuzzleNode succ);
 		void removeSucc(PuzzleNode rsucc);
@@ -82,8 +83,21 @@ PuzzleNode::PuzzleNode(vector<vector<int>> arr){
 
 	}
 
-	void setHeur(float g_set, float h_set){
+	void PuzzleNode::setHeur(float g_set, float h_set){
 		this->g = g_set;
 		this->h = h_set;
 		this->f = g_set + h_set;
+	}
+
+	void PuzzleNode::printn(){
+		for (int i = 0; i < this->board.size(); i++)
+		{
+		    for (int j = 0; j < this->board[i].size(); j++)
+		    {
+		        cout << this->board[i][j];
+		    }
+		    cout << endl;
+		}
+		cout << endl;
+
 	}

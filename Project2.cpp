@@ -73,17 +73,7 @@ using namespace std;
 		return dist;
 	}
 
-	void print_board(vector<vector<int>> board){
-		for (int i = 0; i < board.size(); i++)
-		{
-		    for (int j = 0; j < board[i].size(); j++)
-		    {
-		        cout << board[i][j];
-		    }
-		    cout << endl;
-		}
 
-	}
 
 
 	//Hueristic function: Bradley Hughes
@@ -107,7 +97,7 @@ int main(){
 	PuzzleNode testn(test);
 	PuzzleNode testn2(test2);
 	testn.setBest(&testn2);
-	print_board(testn.getBest()->board);
+	testn.printn();
 
 	//print_board(testnode.board);
 	//print_board(testnode.goal);
