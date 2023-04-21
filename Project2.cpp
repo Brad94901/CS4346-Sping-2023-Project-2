@@ -9,7 +9,7 @@ Implementation of the A* algorithm on the 8-square puzzle
 #include <string>
 #include <vector>
 #include <list>
-#include <Project2.h>
+#include "Project2.h"
 using namespace std;
 
 //Some basic psuedocode to get us started
@@ -23,58 +23,9 @@ using namespace std;
 //g, h', f' , hueristic variables
 //method to remove successors
 
-	PuzzleNode::PuzzleNode(vector<vector<int>> arr){
-		board = arr;
-		bestNode;
-		parent;
-		
-	}
-
-	bool PuzzleNode::isGoal(){ //FIX THIS DOESN'T WORK
-		if(board == goal)
-			return true;
-		else
-			return false;
-	}
-
-	void PuzzleNode::setBoard(vector<vector<int>> arr){
-		board = arr;
-	}
-
-	void setBest(PuzzleNode best);{
-		bestNode = best;
-	}
-	PuzzleNode getBest(){
-		return bestNode;
-	}
-
-	void setParent(PuzzleNode par){
-		parent = par;
-	}
-	PuzzleNode getParent(){
-		return parent;
-	}
 	
-	void addSucc(PuzzleNode succ){
-		successors.push_back(succ);
-
-	}
-	void removeSucc(PuzzleNode rsucc){
-		//Check if rsucc is in successors and remove if so.
-		for(int i = 0; i < successors.size(); i++){
-			if (successors[i].board = rsucc.board){
-				successors.erase(successors.begin() + i);
-				break;
-			}
-		}
-
-	}
-	
-
 	
 	//Function to return vector of all successors
-
-
 
 	//Hueristic function Manhattan Distance/H2
 	int distance_m(int x1, int x2, int y1, int y2){
@@ -82,18 +33,18 @@ using namespace std;
 		return dist;
 	}
 
-	int x2_coord(PuzzleNode board, int value){
+	int x2_coord(PuzzleNode node, int value){
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
 			for (int j = 0; j<3; j++){
-				if (board[i][j] == value)
+				if (node.board[i][j] == value)
 					return i;
 			}
 		}
 	}
-	int y2_coord(PuzzleNode board, int value){
+	int y2_coord(PuzzleNode node, int value){
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
 			for (int j = 0; j<3; j++){
-				if (board[i][j] == value)
+				if (node.board[i][j] == value)
 					return j;
 			}
 		}
@@ -101,19 +52,37 @@ using namespace std;
 
 	int distance_m_coords(PuzzleNode node){
 		int x1, x2, y1, y2;
-		int dist;
+		int dist = 0;
 
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
 			for (int j = 0; j<3; j++){
+				if(node.board[i][j]==0)
+					continue;
 				x1 = i;
 				y1 = j;
-				x2 = x2_coord(node, node.board[i][j])
-				y2 = y2_coord(node, node.board[i][j])
-				dist += distance_m(int x1, int x2, int y1, int y2);
+				x2 = x2_coord(node, node.goal[i][j]);
+				y2 = y2_coord(node, node.goal[i][j]);
+
+				//cout << x1 << "," << y1 << endl;
+				//cout << "|" << x2 << "," << y2 << endl;
+				dist += distance_m(x1, x2, y1, y2);
+				//cout << dist << endl;
 			}
 		}
 
 		return dist;
+	}
+
+	void print_board(vector<vector<int>> board){
+		for (int i = 0; i < board.size(); i++)
+		{
+		    for (int j = 0; j < board[i].size(); j++)
+		    {
+		        cout << board[i][j];
+		    }
+		    cout << endl;
+		}
+
 	}
 
 
@@ -131,9 +100,19 @@ int main(){
 	PuzzleNode init_node_1(init1);
 	PuzzleNode init_node_2(init2);	
 
+
+	//----------------TEST STUFFS---------------------
 	vector<vector<int>> test = {{1, 0, 3}, {4, 2, 6}, {7, 8, 9}};
-	PuzzleNode testnode(test);
-	cout << distance_m_coords(testnode);
+	vector<vector<int>> test2 = {{1, 0, 3}, {4, 2, 6}, {9,8,7}};
+	PuzzleNode testn(test);
+	PuzzleNode testn2(test2);
+	testn.setBest(&testn2);
+	print_board(testn.getBest()->board);
+
+	//print_board(testnode.board);
+	//print_board(testnode.goal);
+	//----------------TEST STUFFS---------------------
+
 
 	//list of OPEN nodes
 	list<PuzzleNode> OPEN;
