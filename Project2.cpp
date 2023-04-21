@@ -28,7 +28,7 @@ using namespace std;
 	//Function to return vector of all successors
 
 	//Hueristic function Manhattan Distance/H2
-	int distance_m(int x1, int x2, int y1, int y2){
+	float distance_m(int x1, int x2, int y1, int y2){
 		int dist = abs(x1 - x2) + abs(y1-y2);
 		return dist;
 	}
@@ -50,7 +50,7 @@ using namespace std;
 		}
 	}
 
-	int distance_m_coords(PuzzleNode node){
+	float distance_m_coords(PuzzleNode node){
 		int x1, x2, y1, y2;
 		int dist = 0;
 

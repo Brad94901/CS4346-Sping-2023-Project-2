@@ -18,15 +18,15 @@ class PuzzleNode{
 		PuzzleNode(vector<vector<int>> arr);
 		bool isGoal();
 		void setBoard(vector<vector<int>> arr);
-
+		void setHeur(float g_set, float h_set);
 
 		void addSucc(PuzzleNode succ);
 		void removeSucc(PuzzleNode rsucc);
 
-		void setBest(PuzzleNode *bestNode); //FIX THESE
-		void setParent(PuzzleNode *par); //FIX THESE
-		PuzzleNode* getBest(); //FIX THESE
-		PuzzleNode* getParent(); //FIX THESE
+		void setBest(PuzzleNode *bestNode); 
+		void setParent(PuzzleNode *par); 
+		PuzzleNode* getBest(); 
+		PuzzleNode* getParent(); 
 		
 		float g;
 		float h;
@@ -36,8 +36,8 @@ class PuzzleNode{
 
 PuzzleNode::PuzzleNode(vector<vector<int>> arr){
 		board = arr;
-		int parent = 0;
-		int bestNode = 0;
+		PuzzleNode *bestNode;
+		PuzzleNode *parent;
 	
 		
 	}
@@ -80,4 +80,10 @@ PuzzleNode::PuzzleNode(vector<vector<int>> arr){
 			}
 		}
 
+	}
+
+	void setHeur(float g_set, float h_set){
+		this->g = g_set;
+		this->h = h_set;
+		this->f = g_set + h_set;
 	}
