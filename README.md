@@ -3,3 +3,4 @@ Implementation of A* algorithm on 8-puzzle game
 
 
 g++ -std=c++11 Project2.h Project2.cpp -o test
+./test

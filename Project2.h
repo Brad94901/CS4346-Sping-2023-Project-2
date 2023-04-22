@@ -12,7 +12,7 @@ class PuzzleNode{
 		PuzzleNode *bestNode; //FIX THESE
 		PuzzleNode *parent;	  //FIX THESE
 	public:
-		vector<vector<int>> goal = {{1, 2, 3}, {4, 0, 6}, {7, 8, 9}};
+		vector<vector<int>> goal = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
 		vector<vector<int>> board;
 		vector<PuzzleNode> successors;
 		PuzzleNode(vector<vector<int>> arr);
@@ -94,7 +94,10 @@ PuzzleNode::PuzzleNode(vector<vector<int>> arr){
 		{
 		    for (int j = 0; j < this->board[i].size(); j++)
 		    {
-		        cout << this->board[i][j];
+		    	if(board[i][j]!=0)
+		        	cout << this->board[i][j];
+		        else
+		        	cout << " ";
 		    }
 		    cout << endl;
 		}

@@ -28,7 +28,7 @@ using namespace std;
 	//Function to return vector of all successors
 
 	//Hueristic function Manhattan Distance/H2
-	float distance_m(int x1, int x2, int y1, int y2){
+	int distance_m(int x1, int x2, int y1, int y2){
 		int dist = abs(x1 - x2) + abs(y1-y2);
 		return dist;
 	}
@@ -50,8 +50,8 @@ using namespace std;
 		}
 	}
 
-	float distance_m_coords(PuzzleNode node){
-		int x1, x2, y1, y2;
+	int distance_m_coords(PuzzleNode node){
+		int x1, y1;
 		int dist = 0;
 
 		for(int i = 0; i<3; i++){ //PuzzleNode.board[i][j]
@@ -60,12 +60,8 @@ using namespace std;
 					continue;
 				x1 = i;
 				y1 = j;
-				x2 = x2_coord(node, node.goal[i][j]);
-				y2 = y2_coord(node, node.goal[i][j]);
-
-				//cout << x1 << "," << y1 << endl;
-				//cout << "|" << x2 << "," << y2 << endl;
-				dist += distance_m(x1, x2, y1, y2);
+				
+				dist += distance_m(x1, x2_coord(node, node.goal[i][j]), y1, y2_coord(node, node.goal[i][j]));
 				//cout << dist << endl;
 			}
 		}
@@ -77,7 +73,7 @@ using namespace std;
 
 
 	//Hueristic function: Bradley Hughes
-
+	// row column sum score the f value is determined by the additional offset of the goal row and column
 
 
 	//Hueristic function: Zohair Khan
