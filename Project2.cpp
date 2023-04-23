@@ -107,7 +107,46 @@ int main(){
 	//write functions to compute hueristic values, assign to nodes
 	
 	//add initial node to OPEN
-	//loop
+    OPEN.push_front(init_node_1);
+    OPEN.front().setHeur(0, distance_m_coords(init_node_1));
+
+    CLOSED.clear();
+    PuzzleNode BESTNODE(test);
+
+    while (true) {
+
+        if (OPEN.empty() == true) {
+            cout << "Failure: OPEN is empty";
+            abort();
+        }
+
+            float lowest = NULL;
+            for (PuzzleNode a : OPEN) {
+                if (lowest > a.f) {
+                    lowest = a.f;
+                    BESTNODE = a;
+                }
+            }
+            OPEN.remove(const BESTNODE);
+
+            CLOSED.push_front(BESTNODE);
+
+
+            BESTNODE.f = lowest
+            if (BESTNODE.isGoal == true) {
+                // report solution
+                abort(); // I guess
+            }
+            else {
+                continue;
+            }
+        }
+        BESTNODE->SUCC; // 2(a)
+
+    }
+
+
+
 		//check if OPEN is empty, if true, report failure
 		//compare f' values in open, assign lowest to BESTNODE
 		//BESTNODE.isGoal, if true report solution, if false keep going.
