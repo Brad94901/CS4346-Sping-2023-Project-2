@@ -144,7 +144,7 @@ using namespace std;
         int k = 0;
         for (int i = 0; i < 3; i++){
             for (int j = 0; k < 3; j++){
-                arr[k++] = node;
+                arr[k++] = node.board[i][j];
             }
         }
         for (int i = 0; i < 8; i++){
