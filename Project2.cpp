@@ -135,7 +135,27 @@ using namespace std;
 
 
 	//Hueristic function: Zohair Khan
+    // This function counts the number of inversions. Inversions are important because inversions determine that
+    // at least one move will be a requirement to reach the goal state.
+    int zohair_heuristic(PuzzleNode node){
+        int h = 0;
 
+        int arr[9];
+        int k = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; k < 3; j++){
+                arr[k++] = node;
+            }
+        }
+        for (int i = 0; i < 8; i++){
+            for (int j = i + 1; j < 9; j++){
+                if (arr[i] > arr[j] && arr[i] != 0 && arr[j] != 0){
+                    h++;
+                }
+            }
+        }
+        return h;
+    }
 
 
 
