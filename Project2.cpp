@@ -209,6 +209,7 @@ using namespace std;
 
 int main(){
 
+    PuzzleNode OLD(empty);
 	//create two initial nodes
 	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
 	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
@@ -269,6 +270,18 @@ int main(){
 
 
             if(BESTNODE.successors[i]) // 2(i)
+                for(int i = 0; i < OPEN.size(); i++) {
+                    for (int j = 0; j < BESTNODE.successors.size(); j++)
+                        if (OPEN[i].board == BESTNODE.sucessors[j].board) {
+                            OLD = OPEN[i];
+                            BESTNODE.successors[i] = OLD;
+
+
+
+
+                            OPEN = f_sort(OPEN);
+                        }
+                }
 
             else if(BESTNODE.successors[i]) // 2(ii)
 
