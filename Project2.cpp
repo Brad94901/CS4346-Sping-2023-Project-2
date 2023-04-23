@@ -203,6 +203,10 @@ using namespace std;
 
 	}
 
+	vector<PuzzleNode> f_sort(vector<PuzzleNode> vect){
+
+	}
+
 int main(){
 
 	//create two initial nodes
@@ -242,7 +246,6 @@ int main(){
         		it = i;
         		lowest = OPEN[i].f;
         	}
-
         }
         
         BESTNODE = OPEN[it];
@@ -263,12 +266,21 @@ int main(){
         for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
             BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
             BESTNODE.successors[i].setParent(&BESTNODE);
-            //if(SUCCESSOR  ) // 2(i)
-            //    else if(SUCCESSOR) // 2(ii)
-            //        else // 2(iii)
+
+
+            if(BESTNODE.successors[i]) // 2(i)
+
+            else if(BESTNODE.successors[i]) // 2(ii)
+
+            else{ // 2(iii)
+
+            	OPEN.push_back(BESTNODE.successors[i]);
+            	//Write a function to sort OPEN
+
+            }
+
         }
 
-        break;
         } 
     }
 
