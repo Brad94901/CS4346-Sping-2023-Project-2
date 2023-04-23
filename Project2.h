@@ -15,6 +15,7 @@ class PuzzleNode{
 		vector<vector<int>> goal = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
 		vector<vector<int>> board;
 		vector<PuzzleNode> successors;
+		PuzzleNode();
 		PuzzleNode(vector<vector<int>> arr);
 		bool isGoal();
 		void setBoard(vector<vector<int>> arr);
@@ -32,6 +33,10 @@ class PuzzleNode{
 		float g;
 		float h;
 		float f;
+
+};
+
+PuzzleNode::PuzzleNode(){
 
 };
 

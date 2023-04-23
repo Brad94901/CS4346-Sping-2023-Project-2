@@ -101,13 +101,13 @@ int main(){
 
 
 	//list of OPEN nodes
-	list<PuzzleNode> OPEN;
+	vector<PuzzleNode> OPEN;
 	//list of CLOSED nodes
-	list<PuzzleNode> CLOSED;
+	vector<PuzzleNode> CLOSED;
 	//write functions to compute hueristic values, assign to nodes
 	
 	//add initial node to OPEN
-    OPEN.push_front(init_node_1);
+    OPEN.push_back(init_node_1);
     OPEN.front().setHeur(0, distance_m_coords(init_node_1));
 
     CLOSED.clear();
@@ -120,20 +120,24 @@ int main(){
             abort();
         }
 
-            float lowest = NULL;
-            for (PuzzleNode a : OPEN) {
-                if (lowest > a.f) {
-                    lowest = a.f;
-                    BESTNODE = a;
-                }
+            int it;
+            int lowest;
+            for (int i = 0; i < OPEN.size(); i++){
+            	if(i == 0)
+            		lowest = OPEN[i].f;
+            	else if(lowest > OPEN[i].f){
+            		it = i;
+            		lowest = OPEN[i].f;
+            	}
+
             }
-            OPEN.remove(const BESTNODE);
+            OPEN.erase(OPEN.begin() + it);
 
-            CLOSED.push_front(BESTNODE);
+            CLOSED.push_back(BESTNODE);
 
 
-            BESTNODE.f = lowest
-            if (BESTNODE.isGoal == true) {
+            BESTNODE.f = lowest;
+            if (BESTNODE.isGoal() == true) {
                 // report solution
                 abort(); // I guess
             }
@@ -141,8 +145,6 @@ int main(){
                 continue;
             }
         }
-        BESTNODE->SUCC; // 2(a)
-
     }
 
 
@@ -171,4 +173,3 @@ int main(){
 			//reorder OPEN
 
 
-}
