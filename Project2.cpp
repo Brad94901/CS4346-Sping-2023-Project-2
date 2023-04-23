@@ -11,6 +11,8 @@ Implementation of the A* algorithm on the 8-square puzzle
 #include <list>
 #include "Project2.h"
 using namespace std;
+#define ROW 2
+#define COL 2
 
 //Some basic psuedocode to get us started
 //basic class to store the state of each node
@@ -23,8 +25,13 @@ using namespace std;
 //g, h', f' , hueristic variables
 //method to remove successors
 
-	
-	
+    bool isValid(int x, int y)
+    {
+    return (x >= 0) && (x < ROW) && (y >= 0)
+           && (y < COL);
+    }
+
+
 	//Function to return vector of all successors
 
 	//Hueristic function Manhattan Distance/H2
@@ -134,15 +141,58 @@ int main(){
             OPEN.erase(OPEN.begin() + it);
 
             CLOSED.push_back(BESTNODE);
-
-
-            BESTNODE.f = lowest;
             if (BESTNODE.isGoal() == true) {
-                // report solution
-                abort(); // I guess
+                cout << "We are finished!";
+                abort();
             }
-            else {
-                continue;
+
+            // use x2_coord and y2_coord to find the cartesian coord of 0 and then store in x and y value
+            // after I find the successor use something like vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}}
+            // as an array and put new coordinates in here, init1 changes to successor
+            // create vector<vector<int>> SUCCESSOR; before the loop for successor
+
+            // Generate North
+            x = x2_coord(BESTNODE, 0);
+            y = y2_coord(BESTNODE, 0);
+            if (isValid(x - 1, y) == true){
+                vector<vector<int>> SUCCESSOR = BESTNODE.board;
+                int temp = SUCCESSOR[x - 1][y];
+                SUCCESSOR[x - 1][y] = 0;
+                SUCCESSOR[x][y] = temp;
+                PuzzleNode tempN(SUCCESSOR);
+                BESTNODE.addSucc(tempN);
+            }
+            // Generate South
+            if (isValid(x - 1, y) == true){
+                vector<vector<int>> SUCCESSOR = BESTNODE.board;
+                int temp = SUCCESSOR[x - 1][y];
+                SUCCESSOR[x - 1][y] = 0;
+                SUCCESSOR[x][y] = temp;
+                PuzzleNode tempN(SUCCESSOR);
+                BESTNODE.addSucc(tempN);
+            }
+            // Generate East
+            if (isValid(x - 1, y) == true){
+                vector<vector<int>> SUCCESSOR = BESTNODE.board;
+                int temp = SUCCESSOR[x - 1][y];
+                SUCCESSOR[x - 1][y] = 0;
+                SUCCESSOR[x][y] = temp;
+                PuzzleNode tempN(SUCCESSOR);
+                BESTNODE.addSucc(tempN);
+            }
+            // Generate West
+            if (isValid(x - 1, y) == true){
+                vector<vector<int>> SUCCESSOR = BESTNODE.board;
+                int temp = SUCCESSOR[x - 1][y];
+                SUCCESSOR[x - 1][y] = 0;
+                SUCCESSOR[x][y] = temp;
+                PuzzleNode tempN(SUCCESSOR);
+                BESTNODE.addSucc(tempN);
+            }
+
+            for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
+            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board))
+
             }
         }
     }
