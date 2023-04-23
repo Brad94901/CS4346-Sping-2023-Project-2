@@ -152,8 +152,8 @@ int main(){
             // create vector<vector<int>> SUCCESSOR; before the loop for successor
 
             // Generate North
-            x = x2_coord(BESTNODE, 0);
-            y = y2_coord(BESTNODE, 0);
+            int x = x2_coord(BESTNODE, 0);
+            int y = y2_coord(BESTNODE, 0);
             if (isValid(x - 1, y) == true){
                 vector<vector<int>> SUCCESSOR = BESTNODE.board;
                 int temp = SUCCESSOR[x - 1][y];
@@ -191,7 +191,7 @@ int main(){
             }
 
             for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
-            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board))
+            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
 
             }
         }
