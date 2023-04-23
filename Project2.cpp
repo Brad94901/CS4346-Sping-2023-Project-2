@@ -232,6 +232,7 @@ using namespace std;
 
 int main(){
 
+    PuzzleNode OLD(empty);
 	//create two initial nodes
 	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
 	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
@@ -286,21 +287,33 @@ int main(){
         // create vector<vector<int>> SUCCESSOR; before the loop for successor
         BESTNODE.successors = genSuccessors(BESTNODE);
         
-        for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
-            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
-            BESTNODE.successors[i].setParent(&BESTNODE);
 
+        for (int j = 0; i < BESTNODE.successors.size(); j++ ){ //looping through all the successors
+            BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
+            BESTNODE.successors[j].setParent(&BESTNODE);
 
-            if(false == true) // 2(i)
-            	cout <<""; 	
+            for(int i = 0; i < OPEN.size(); i++) {
+                    if (OPEN[i].board == BESTNODE.sucessors[j].board) {
+                        OLD = OPEN[i];
+                        BESTNODE.successors[j] = OLD;
 
-            else if(false == true) // 2(ii)
-            	cout <<"";
+                        if (BESTNODE.f < OLD.getParent().f)
+                            OLD.setParent(&BESTNODE);
+
+                        // last part of 2.1
+                        OPEN.push_back(BESTNODE.successors[j]);
+                        OPEN = f_sort(OPEN);
+                    }
+            }
+
+            else if(BESTNODE.successors[j]) // 2(ii)
 
             else{ // 2(iii)
 
-            	OPEN.push_back(BESTNODE.successors[i]);
-            	OPEN = f_sort(OPEN);
+            	OPEN.push_back(BESTNODE.successors[j]);
+              OPEN = f_sort(OPEN);
+            	//Write a function to sort OPEN
+
             }
 
         }
