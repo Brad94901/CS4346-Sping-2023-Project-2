@@ -230,6 +230,32 @@ using namespace std;
 	    return temp;
 	}
 
+	bool check_succ(PuzzleNode node){
+		for(int i = 0; i < node.successors.size(); i++){
+			if(node.successors[i].f > node.f)
+				return false;
+		}
+		return true;
+	}
+
+
+	int update_heur(PuzzleNode OLD){
+		if(OLD.successors.empty() == true || check_succ(OLD) == true)
+			return 0;
+
+		for(int i = 0; i < OLD.successors.size(); i++){
+			if(OLD.successors[i].f <= OLD.f)
+				continue;
+			else if(OLD.successors[i].f > OLD.f){
+				OLD.successors[i].setHeur(OLD.g + 1, OLD.h);
+				OLD = OLD.successors[i];
+			}
+		
+		update_heur(OLD);
+		}
+	}
+
+
 int main(){
 	//create two initial nodes
 	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
@@ -275,21 +301,17 @@ int main(){
         OPEN.erase(OPEN.begin() + it);
 
         CLOSED.push_back(BESTNODE);
+        BESTNODE.printn();
         if (BESTNODE.isGoal() == true) {
             cout << "We are finished!";
-            abort();
+           break;
         }
 
-        // use x2_coord and y2_coord to find the cartesian coord of 0 and then store in x and y value
-        // after I find the successor use something like vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}}
-        // as an array and put new coordinates in here, init1 changes to successor
-        // create vector<vector<int>> SUCCESSOR; before the loop for successor
         BESTNODE.successors = genSuccessors(BESTNODE);
         
         for (int j = 0; j < BESTNODE.successors.size(); j++ ){ //looping through all the successors
             BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
             BESTNODE.successors[j].setParent(&BESTNODE);
-
             int cond = 0;
 
             for(int i = 0; i < OPEN.size(); i++) {
@@ -315,12 +337,10 @@ int main(){
                 	if(OLD.f < BESTNODE.successors[j].f)
                 		BESTNODE.removeSucc(BESTNODE.successors[j]);
 
-                	if (BESTNODE.f < OLD.getParent()->f)
+                	if (BESTNODE.f < OLD.getParent()->f){
                         OLD.setParent(&BESTNODE);
-
-
-
-
+                    	update_heur(OLD);
+                    }
                 }
             }
 
@@ -331,35 +351,9 @@ int main(){
             	//Write a function to sort OPEN
 
             }
-
         }
 
         } 
     }
-
-
-
-		//check if OPEN is empty, if true, report failure
-		//compare f' values in open, assign lowest to BESTNODE
-		//BESTNODE.isGoal, if true report solution, if false keep going.
-
-		//generate SUCESSORS of BESTNODE
-		//compute hueristics for sucessors of BESTNODE
-		//check if sucessor is already on OPEN
-			//if true, old = sucessor, delete sucessor, add old to BESTNODE's sucessors,
-			//determine if OLD's parent should be BESTNODE or it's previously determined parent, check algorithm for specifics
-
-		//check if sucessor is on CLOSED
-			//if true, node on CLOSED == OLD
-			//add old to BESTNODE's sucessors
-			//compare old and new paths
-			//reset OLD's parent link to BESTNODE
-			//update OLD's hueristics
-			//add SUCESSOR to OPEN, reorder OPEN based on f' value
-			//compare paths
-
-		//Else BESTNODE = SUCESSOR
-			//add sucessor to OPEN
-			//reorder OPEN
 
 
