@@ -163,40 +163,43 @@ int main(){
                 BESTNODE.addSucc(tempN);
             }
             // Generate South
-            if (isValid(x - 1, y) == true){
+            if (isValid(x + 1, y) == true){
                 vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x - 1][y];
-                SUCCESSOR[x - 1][y] = 0;
+                int temp = SUCCESSOR[x + 1][y];
+                SUCCESSOR[x + 1][y] = 0;
                 SUCCESSOR[x][y] = temp;
                 PuzzleNode tempN(SUCCESSOR);
                 BESTNODE.addSucc(tempN);
             }
             // Generate East
-            if (isValid(x - 1, y) == true){
+            if (isValid(x, y + 1) == true){
                 vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x - 1][y];
-                SUCCESSOR[x - 1][y] = 0;
+                int temp = SUCCESSOR[x][y + 1];
+                SUCCESSOR[x][y + 1] = 0;
                 SUCCESSOR[x][y] = temp;
                 PuzzleNode tempN(SUCCESSOR);
                 BESTNODE.addSucc(tempN);
             }
             // Generate West
-            if (isValid(x - 1, y) == true){
+            if (isValid(x, y - 1) == true){
                 vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x - 1][y];
-                SUCCESSOR[x - 1][y] = 0;
+                int temp = SUCCESSOR[x][y - 1];
+                SUCCESSOR[x][y - 1] = 0;
                 SUCCESSOR[x][y] = temp;
                 PuzzleNode tempN(SUCCESSOR);
                 BESTNODE.addSucc(tempN);
             }
 
             for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
-            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
-
+                BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
+                BESTNODE.successors[i].setParent(&BESTNODE);
+                if(SUCCESSOR  ) // 2(i)
+                    else if(SUCCESSOR) // 2(ii)
+                        else // 2(iii)
             }
         }
     }
-//gg
+
 
 
 		//check if OPEN is empty, if true, report failure
