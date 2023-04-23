@@ -196,7 +196,7 @@ int main(){
             }
         }
     }
-
+//gg
 
 
 		//check if OPEN is empty, if true, report failure
