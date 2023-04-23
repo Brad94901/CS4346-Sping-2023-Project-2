@@ -110,7 +110,6 @@ using namespace std;
      		sum += board[i][0];
 
      	dist += abs(sum - 16);
-     	cout << sum << endl;
      	sum = 0;
      	
 
@@ -118,7 +117,6 @@ using namespace std;
      		sum += board[i][1];
 
      	dist += abs(sum - 8);
-     	cout << sum << endl;
      	sum = 0;
      	
 
@@ -126,15 +124,31 @@ using namespace std;
      		sum += board[i][2];
 
      	dist += abs(sum - 12);
-     	cout << sum << endl;
      	sum = 0;
      	
      	return dist;
 
 	}
 
+	int zohair_heuristic(PuzzleNode node){
+        int h = 0;
 
-	//Hueristic function: Zohair Khan
+        int arr[9];
+        int k = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; k < 3; j++){
+                arr[k++] = node.board[i][j];
+            }
+        }
+        for (int i = 0; i < 8; i++){
+            for (int j = i + 1; j < 9; j++){
+                if (arr[i] > arr[j] && arr[i] != 0 && arr[j] != 0){
+                    h++;
+                }
+            }
+        }
+        return h;
+    }
 
 
 
@@ -310,7 +324,7 @@ int main(){
         BESTNODE.successors = genSuccessors(BESTNODE);
         
         for (int j = 0; j < BESTNODE.successors.size(); j++ ){ //looping through all the successors
-            BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
+            BESTNODE.successors[j].setHeur(BESTNODE.g + 1, brad_heuristic(BESTNODE.successors[j].board));
             BESTNODE.successors[j].setParent(&BESTNODE);
             int cond = 0;
 
