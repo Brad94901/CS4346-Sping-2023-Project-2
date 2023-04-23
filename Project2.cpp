@@ -5,6 +5,7 @@ Implementation of the A* algorithm on the 8-square puzzle
 */
 
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -128,7 +129,6 @@ using namespace std;
      	cout << sum << endl;
      	sum = 0;
      	
-
      	return dist;
 
 	}
@@ -203,8 +203,31 @@ using namespace std;
 
 	}
 
-	vector<PuzzleNode> f_sort(vector<PuzzleNode> vect){
+	vector<PuzzleNode> f_sort(vector<PuzzleNode> OPEN){
+		vector<PuzzleNode> vect = OPEN;
+		vector<PuzzleNode>temp;
+		int it;
+        int lowest;
+        for(int j = 0; j < vect.size(); j++){
+	        for (int i = 0; i < OPEN.size(); i++){
+	        	if(i == 0)
+	        		lowest = OPEN[i].f;
+	        	else if(lowest > OPEN[i].f){
+	        		it = i;
+	        		lowest = OPEN[i].f;
+	        	}
+	        }
+	        if(vect.size() == 1){
+	        	temp.push_back(OPEN[it]);
+	        	vect.clear();
+	        }
+	        else{
+	        	temp.push_back(OPEN[it]);
+	        	vect.erase(vect.begin() + it);
+	        }
 
+	    }
+	    return temp;
 	}
 
 int main(){
@@ -264,6 +287,7 @@ int main(){
         // create vector<vector<int>> SUCCESSOR; before the loop for successor
         BESTNODE.successors = genSuccessors(BESTNODE);
         
+
         for (int j = 0; i < BESTNODE.successors.size(); j++ ){ //looping through all the successors
             BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
             BESTNODE.successors[j].setParent(&BESTNODE);
@@ -287,6 +311,7 @@ int main(){
             else{ // 2(iii)
 
             	OPEN.push_back(BESTNODE.successors[j]);
+              	OPEN = f_sort(OPEN);
             	//Write a function to sort OPEN
 
             }
