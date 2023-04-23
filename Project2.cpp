@@ -11,8 +11,8 @@ Implementation of the A* algorithm on the 8-square puzzle
 #include <list>
 #include "Project2.h"
 using namespace std;
-#define ROW 2
-#define COL 2
+#define ROW 3
+#define COL 3
 
 //Some basic psuedocode to get us started
 //basic class to store the state of each node
@@ -77,34 +77,141 @@ using namespace std;
 	}
 
 
-
-
 	//Hueristic function: Bradley Hughes
 	// row column sum score the f value is determined by the additional offset of the goal row and column
+	int brad_heuristic(PuzzleNode node){
+		int dist = 0;
+		int sum = 0;
+		vector<vector<int>> board = node.board;
+
+		//Rows
+		for (auto& n : board[0])
+     		sum += n;
+
+     	dist += abs(sum - 6);
+     	sum = 0;
+
+     	for (auto& n : board[1])
+     		sum += n;
+
+     	dist += abs(sum - 12);
+     	sum = 0;
+
+     	for (auto& n : board[2])
+     		sum += n;
+
+     	dist += abs(sum - 18);
+     	sum = 0;
+
+     	//Cols
+
+     	for(int i = 0; i < 3; i++)
+     		sum += board[i][0];
+
+     	dist += abs(sum - 16);
+     	cout << sum << endl;
+     	sum = 0;
+     	
+
+     	for(int i = 0; i < 3; i++)
+     		sum += board[i][1];
+
+     	dist += abs(sum - 8);
+     	cout << sum << endl;
+     	sum = 0;
+     	
+
+     	for(int i = 0; i < 3; i++)
+     		sum += board[i][2];
+
+     	dist += abs(sum - 12);
+     	cout << sum << endl;
+     	sum = 0;
+     	
+
+     	return dist;
+
+	}
 
 
 	//Hueristic function: Zohair Khan
+
+
+
+
+	//Generate Successors
+	vector<PuzzleNode> genSuccessors(PuzzleNode BESTNODE){
+
+		int x = x2_coord(BESTNODE, 0);
+        int y = y2_coord(BESTNODE, 0);
+        vector<PuzzleNode> tempV;
+        
+        // Generate North
+        if (isValid(x - 1, y) == true){
+            vector<vector<int>> SUCCESSOR = BESTNODE.board;
+            int temp = SUCCESSOR[x - 1][y];
+            SUCCESSOR[x - 1][y] = 0;
+            SUCCESSOR[x][y] = temp;
+            PuzzleNode tempN(SUCCESSOR);
+            tempV.push_back(tempN);
+        }
+        // Generate South
+        if (isValid(x + 1, y) == true){
+            vector<vector<int>> SUCCESSOR = BESTNODE.board;
+            int temp = SUCCESSOR[x + 1][y];
+            SUCCESSOR[x + 1][y] = 0;
+            SUCCESSOR[x][y] = temp;
+            PuzzleNode tempN(SUCCESSOR);
+            tempV.push_back(tempN);
+        }
+        // Generate East
+        if (isValid(x, y + 1) == true){
+            vector<vector<int>> SUCCESSOR = BESTNODE.board;
+            int temp = SUCCESSOR[x][y + 1];
+            SUCCESSOR[x][y + 1] = 0;
+            SUCCESSOR[x][y] = temp;
+            PuzzleNode tempN(SUCCESSOR);
+            tempV.push_back(tempN);
+        }
+        // Generate West
+        if (isValid(x, y - 1) == true){
+
+            vector<vector<int>> SUCCESSOR = BESTNODE.board;
+            int temp = SUCCESSOR[x][y - 1];
+            SUCCESSOR[x][y - 1] = 0;
+            SUCCESSOR[x][y] = temp;
+            PuzzleNode tempN(SUCCESSOR);
+            tempV.push_back(tempN);
+        }
+
+        return tempV;
+	}
+
+	void printb(PuzzleNode test){
+		for (int i = 0; i < test.board.size(); i++)
+		{
+		    for (int j = 0; j < test.board.size(); j++)
+		    {
+		    	if(test.board[i][j]!=0)
+		        	cout << test.board[i][j];
+		        else
+		        	cout << " ";
+		    }
+		    cout << endl;
+		}
+		cout << endl;
+
+	}
 
 int main(){
 
 	//create two initial nodes
 	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
 	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
+	vector<vector<int>> empty = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+
 	PuzzleNode init_node_1(init1);
 	PuzzleNode init_node_2(init2);	
-
-
-	//----------------TEST STUFFS---------------------
-	vector<vector<int>> test = {{1, 0, 3}, {4, 2, 6}, {7, 8, 9}};
-	vector<vector<int>> test2 = {{1, 0, 3}, {4, 2, 6}, {9,8,7}};
-	PuzzleNode testn(test);
-	PuzzleNode testn2(test2);
-	testn.setBest(&testn2);
-	testn.printn();
-
-	//print_board(testnode.board);
-	//print_board(testnode.goal);
-	//----------------TEST STUFFS---------------------
 
 
 	//list of OPEN nodes
@@ -118,86 +225,51 @@ int main(){
     OPEN.front().setHeur(0, distance_m_coords(init_node_1));
 
     CLOSED.clear();
-    PuzzleNode BESTNODE(test);
-
+    PuzzleNode BESTNODE(empty);
+    
     while (true) {
-
         if (OPEN.empty() == true) {
             cout << "Failure: OPEN is empty";
             abort();
         }
 
-            int it;
-            int lowest;
-            for (int i = 0; i < OPEN.size(); i++){
-            	if(i == 0)
-            		lowest = OPEN[i].f;
-            	else if(lowest > OPEN[i].f){
-            		it = i;
-            		lowest = OPEN[i].f;
-            	}
+        int it;
+        int lowest;
+        for (int i = 0; i < OPEN.size(); i++){
+        	if(i == 0)
+        		lowest = OPEN[i].f;
+        	else if(lowest > OPEN[i].f){
+        		it = i;
+        		lowest = OPEN[i].f;
+        	}
 
-            }
-            OPEN.erase(OPEN.begin() + it);
-
-            CLOSED.push_back(BESTNODE);
-            if (BESTNODE.isGoal() == true) {
-                cout << "We are finished!";
-                abort();
-            }
-
-            // use x2_coord and y2_coord to find the cartesian coord of 0 and then store in x and y value
-            // after I find the successor use something like vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}}
-            // as an array and put new coordinates in here, init1 changes to successor
-            // create vector<vector<int>> SUCCESSOR; before the loop for successor
-
-            // Generate North
-            int x = x2_coord(BESTNODE, 0);
-            int y = y2_coord(BESTNODE, 0);
-            if (isValid(x - 1, y) == true){
-                vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x - 1][y];
-                SUCCESSOR[x - 1][y] = 0;
-                SUCCESSOR[x][y] = temp;
-                PuzzleNode tempN(SUCCESSOR);
-                BESTNODE.addSucc(tempN);
-            }
-            // Generate South
-            if (isValid(x + 1, y) == true){
-                vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x + 1][y];
-                SUCCESSOR[x + 1][y] = 0;
-                SUCCESSOR[x][y] = temp;
-                PuzzleNode tempN(SUCCESSOR);
-                BESTNODE.addSucc(tempN);
-            }
-            // Generate East
-            if (isValid(x, y + 1) == true){
-                vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x][y + 1];
-                SUCCESSOR[x][y + 1] = 0;
-                SUCCESSOR[x][y] = temp;
-                PuzzleNode tempN(SUCCESSOR);
-                BESTNODE.addSucc(tempN);
-            }
-            // Generate West
-            if (isValid(x, y - 1) == true){
-                vector<vector<int>> SUCCESSOR = BESTNODE.board;
-                int temp = SUCCESSOR[x][y - 1];
-                SUCCESSOR[x][y - 1] = 0;
-                SUCCESSOR[x][y] = temp;
-                PuzzleNode tempN(SUCCESSOR);
-                BESTNODE.addSucc(tempN);
-            }
-
-            for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
-                BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
-                BESTNODE.successors[i].setParent(&BESTNODE);
-                if(SUCCESSOR  ) // 2(i)
-                    else if(SUCCESSOR) // 2(ii)
-                        else // 2(iii)
-            }
         }
+        
+        BESTNODE = OPEN[it];
+        OPEN.erase(OPEN.begin() + it);
+
+        CLOSED.push_back(BESTNODE);
+        if (BESTNODE.isGoal() == true) {
+            cout << "We are finished!";
+            abort();
+        }
+
+        // use x2_coord and y2_coord to find the cartesian coord of 0 and then store in x and y value
+        // after I find the successor use something like vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}}
+        // as an array and put new coordinates in here, init1 changes to successor
+        // create vector<vector<int>> SUCCESSOR; before the loop for successor
+        BESTNODE.successors = genSuccessors(BESTNODE);
+        
+        for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
+            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
+            BESTNODE.successors[i].setParent(&BESTNODE);
+            //if(SUCCESSOR  ) // 2(i)
+            //    else if(SUCCESSOR) // 2(ii)
+            //        else // 2(iii)
+        }
+
+        break;
+        } 
     }
 
 
