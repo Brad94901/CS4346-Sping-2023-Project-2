@@ -264,30 +264,29 @@ int main(){
         // create vector<vector<int>> SUCCESSOR; before the loop for successor
         BESTNODE.successors = genSuccessors(BESTNODE);
         
-        for (int i = 0; i < BESTNODE.successors.size(); i++ ){ //looping through all the successors
-            BESTNODE.successors[i].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[i].board));
-            BESTNODE.successors[i].setParent(&BESTNODE);
+        for (int j = 0; i < BESTNODE.successors.size(); j++ ){ //looping through all the successors
+            BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
+            BESTNODE.successors[j].setParent(&BESTNODE);
 
+            for(int i = 0; i < OPEN.size(); i++) {
+                    if (OPEN[i].board == BESTNODE.sucessors[j].board) {
+                        OLD = OPEN[i];
+                        BESTNODE.successors[j] = OLD;
 
-            if(BESTNODE.successors[i]) // 2(i)
-                for(int i = 0; i < OPEN.size(); i++) {
-                    for (int j = 0; j < BESTNODE.successors.size(); j++)
-                        if (OPEN[i].board == BESTNODE.sucessors[j].board) {
-                            OLD = OPEN[i];
-                            BESTNODE.successors[i] = OLD;
+                        if ()
+                        OLD.setParent(&BESTNODE);
 
+                        // last part of 2.1
+                        OPEN.push_back(BESTNODE.successors[j]);
+                        OPEN = f_sort(OPEN);
+                    }
+            }
 
-
-
-                            OPEN = f_sort(OPEN);
-                        }
-                }
-
-            else if(BESTNODE.successors[i]) // 2(ii)
+            else if(BESTNODE.successors[j]) // 2(ii)
 
             else{ // 2(iii)
 
-            	OPEN.push_back(BESTNODE.successors[i]);
+            	OPEN.push_back(BESTNODE.successors[j]);
             	//Write a function to sort OPEN
 
             }
