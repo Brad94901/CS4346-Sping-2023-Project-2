@@ -273,8 +273,8 @@ int main(){
                         OLD = OPEN[i];
                         BESTNODE.successors[j] = OLD;
 
-                        if ()
-                        OLD.setParent(&BESTNODE);
+                        if (BESTNODE.f < OLD.getParent().f)
+                            OLD.setParent(&BESTNODE);
 
                         // last part of 2.1
                         OPEN.push_back(BESTNODE.successors[j]);
