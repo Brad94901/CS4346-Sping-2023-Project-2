@@ -231,13 +231,12 @@ using namespace std;
 	}
 
 int main(){
-
-    PuzzleNode OLD(empty);
 	//create two initial nodes
 	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
 	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
 	vector<vector<int>> empty = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 
+	PuzzleNode OLD(empty);
 	PuzzleNode init_node_1(init1);
 	PuzzleNode init_node_2(init2);	
 
@@ -287,31 +286,48 @@ int main(){
         // create vector<vector<int>> SUCCESSOR; before the loop for successor
         BESTNODE.successors = genSuccessors(BESTNODE);
         
-
-        for (int j = 0; i < BESTNODE.successors.size(); j++ ){ //looping through all the successors
+        for (int j = 0; j < BESTNODE.successors.size(); j++ ){ //looping through all the successors
             BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
             BESTNODE.successors[j].setParent(&BESTNODE);
 
+            int cond = 0;
+
             for(int i = 0; i < OPEN.size(); i++) {
-                    if (OPEN[i].board == BESTNODE.sucessors[j].board) {
-                        OLD = OPEN[i];
-                        BESTNODE.successors[j] = OLD;
+                if (OPEN[i].board == BESTNODE.successors[j].board) {
+                	cond++;
+                    OLD = OPEN[i];
+                    BESTNODE.successors[j] = OLD;
 
-                        if (BESTNODE.f < OLD.getParent().f)
-                            OLD.setParent(&BESTNODE);
+                    if (BESTNODE.f < OLD.getParent()->f)
+                        OLD.setParent(&BESTNODE);
 
-                        // last part of 2.1
-                        OPEN.push_back(BESTNODE.successors[j]);
-                        OPEN = f_sort(OPEN);
-                    }
+                    // last part of 2.1
+                    OPEN.push_back(BESTNODE.successors[j]);
+                    OPEN = f_sort(OPEN);
+                }
             }
 
-            else if(BESTNODE.successors[j]) // 2(ii)
+            for(int i = 0; i < CLOSED.size(); i++) {
+                if (CLOSED[i].board == BESTNODE.successors[j].board){
+                	cond++;
+                	OLD = CLOSED[i];
 
-            else{ // 2(iii)
+                	if(OLD.f < BESTNODE.successors[j].f)
+                		BESTNODE.removeSucc(BESTNODE.successors[j]);
+
+                	if (BESTNODE.f < OLD.getParent()->f)
+                        OLD.setParent(&BESTNODE);
+
+
+
+
+                }
+            }
+
+            if(cond == 0){ // 2(iii)
 
             	OPEN.push_back(BESTNODE.successors[j]);
-              OPEN = f_sort(OPEN);
+              	OPEN = f_sort(OPEN);
             	//Write a function to sort OPEN
 
             }
