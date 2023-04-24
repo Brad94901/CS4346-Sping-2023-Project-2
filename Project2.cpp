@@ -10,6 +10,7 @@ Implementation of the A* algorithm on the 8-square puzzle
 #include <string>
 #include <vector>
 #include <list>
+#include <chrono>
 #include "Project2.h"
 using namespace std;
 #define ROW 3
@@ -110,7 +111,6 @@ using namespace std;
      		sum += board[i][0];
 
      	dist += abs(sum - 16);
-     	cout << sum << endl;
      	sum = 0;
      	
 
@@ -118,7 +118,6 @@ using namespace std;
      		sum += board[i][1];
 
      	dist += abs(sum - 8);
-     	cout << sum << endl;
      	sum = 0;
      	
 
@@ -126,18 +125,13 @@ using namespace std;
      		sum += board[i][2];
 
      	dist += abs(sum - 12);
-     	cout << sum << endl;
      	sum = 0;
      	
      	return dist;
 
 	}
 
-
-	//Hueristic function: Zohair Khan
-    // This function counts the number of inversions. Inversions are important because inversions determine that
-    // at least one move will be a requirement to reach the goal state.
-    int zohair_heuristic(PuzzleNode node){
+	int zohair_heuristic(PuzzleNode node){
         int h = 0;
 
         int arr[9];
@@ -156,6 +150,7 @@ using namespace std;
         }
         return h;
     }
+
 
 
 
@@ -250,14 +245,39 @@ using namespace std;
 	    return temp;
 	}
 
-int main(){
+	bool check_succ(PuzzleNode node){
+		for(int i = 0; i < node.successors.size(); i++){
+			if(node.successors[i].f > node.f)
+				return false;
+		}
+		return true;
+	}
 
-    PuzzleNode OLD(empty);
+
+	int update_heur(PuzzleNode OLD){
+		if(OLD.successors.empty() == true || check_succ(OLD) == true)
+			return 0;
+
+		for(int i = 0; i < OLD.successors.size(); i++){
+			if(OLD.successors[i].g <= OLD.g)
+				continue;
+			else if(OLD.successors[i].g > OLD.g){
+				OLD.successors[i].setHeur(OLD.g + 1, OLD.h);
+				OLD = OLD.successors[i];
+			}
+		
+		update_heur(OLD);
+		}
+	}
+
+
+int main(){
 	//create two initial nodes
 	vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}};
 	vector<vector<int>> init2 = {{2, 1, 6}, {4, 0, 8}, {7, 5, 3}};
 	vector<vector<int>> empty = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 
+	PuzzleNode OLD(empty);
 	PuzzleNode init_node_1(init1);
 	PuzzleNode init_node_2(init2);	
 
@@ -269,16 +289,23 @@ int main(){
 	//write functions to compute hueristic values, assign to nodes
 	
 	//add initial node to OPEN
-    OPEN.push_back(init_node_1);
+    OPEN.push_back(init_node_2);
     OPEN.front().setHeur(0, distance_m_coords(init_node_1));
 
     CLOSED.clear();
     PuzzleNode BESTNODE(empty);
+
+    cout << "Manhattan Distance " << endl;
     
+    int NodeGenerated = 0;
+    int TreeDepth = 0;
+    int NodesExpanded = 0;
+    auto start = chrono::steady_clock::now();
     while (true) {
+    	
         if (OPEN.empty() == true) {
-            cout << "Failure: OPEN is empty";
-            abort();
+            cout << "Failure: OPEN is empty" << endl;
+            break;
         }
 
         int it;
@@ -296,74 +323,70 @@ int main(){
         OPEN.erase(OPEN.begin() + it);
 
         CLOSED.push_back(BESTNODE);
+        BESTNODE.printn();
         if (BESTNODE.isGoal() == true) {
-            cout << "We are finished!";
-            abort();
+            cout << "We are finished!" << endl;
+           break;
         }
 
-        // use x2_coord and y2_coord to find the cartesian coord of 0 and then store in x and y value
-        // after I find the successor use something like vector<vector<int>> init1 = {{2, 8, 3}, {1, 6, 4}, {0, 7, 5}}
-        // as an array and put new coordinates in here, init1 changes to successor
-        // create vector<vector<int>> SUCCESSOR; before the loop for successor
         BESTNODE.successors = genSuccessors(BESTNODE);
+        NodesExpanded++;
+        NodeGenerated += BESTNODE.successors.size();
         
-
-        for (int j = 0; i < BESTNODE.successors.size(); j++ ){ //looping through all the successors
+        for (int j = 0; j < BESTNODE.successors.size(); j++ ){ //looping through all the successors
             BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
             BESTNODE.successors[j].setParent(&BESTNODE);
+            int cond = 0;
 
             for(int i = 0; i < OPEN.size(); i++) {
-                    if (OPEN[i].board == BESTNODE.sucessors[j].board) {
-                        OLD = OPEN[i];
-                        BESTNODE.successors[j] = OLD;
+                if (OPEN[i].board == BESTNODE.successors[j].board) {
+                	cond++;
+                    OLD = OPEN[i];
+                    BESTNODE.successors[j] = OLD;
 
-                        if (BESTNODE.f < OLD.getParent().f)
-                            OLD.setParent(&BESTNODE);
+                    if (BESTNODE.f < OLD.getParent()->f)
+                        OLD.setParent(&BESTNODE);
 
-                        // last part of 2.1
-                        OPEN.push_back(BESTNODE.successors[j]);
-                        OPEN = f_sort(OPEN);
-                    }
+                    // last part of 2.1
+                    OPEN.push_back(BESTNODE.successors[j]);
+                    OPEN = f_sort(OPEN);
+                }
             }
 
-            else if(BESTNODE.successors[j]) // 2(ii)
+            for(int i = 0; i < CLOSED.size(); i++) {
+                if (CLOSED[i].board == BESTNODE.successors[j].board){
+                	cond++;
+                	OLD = CLOSED[i];
 
-            else{ // 2(iii)
+                	if(OLD.g < BESTNODE.successors[j].g)
+                		BESTNODE.removeSucc(BESTNODE.successors[j]);
+
+                	if (BESTNODE.g < OLD.getParent()->g){
+                        OLD.setParent(&BESTNODE);
+                    	update_heur(OLD);
+                    }
+                }
+            }
+
+            if(cond == 0){ // 2(iii)
 
             	OPEN.push_back(BESTNODE.successors[j]);
               	OPEN = f_sort(OPEN);
             	//Write a function to sort OPEN
 
             }
-
         }
 
-        } 
+        }
+        auto end = chrono::steady_clock::now();
+		auto diff = end - start;
+		cout << "Execution time: "<< chrono::duration <double, milli> (diff).count() << " ms" << endl; 
+		cout << "Nodes Generated: " << NodeGenerated <<endl;
+		cout << "Tree Depth: " << NodesExpanded <<endl;
+		cout << "Nodes Expanded: " << NodesExpanded <<endl;
+		float Branching = float(NodeGenerated) / float(NodesExpanded);
+		cout << "Branching Factor b* : " << Branching <<endl;
+
     }
-
-
-
-		//check if OPEN is empty, if true, report failure
-		//compare f' values in open, assign lowest to BESTNODE
-		//BESTNODE.isGoal, if true report solution, if false keep going.
-
-		//generate SUCESSORS of BESTNODE
-		//compute hueristics for sucessors of BESTNODE
-		//check if sucessor is already on OPEN
-			//if true, old = sucessor, delete sucessor, add old to BESTNODE's sucessors,
-			//determine if OLD's parent should be BESTNODE or it's previously determined parent, check algorithm for specifics
-
-		//check if sucessor is on CLOSED
-			//if true, node on CLOSED == OLD
-			//add old to BESTNODE's sucessors
-			//compare old and new paths
-			//reset OLD's parent link to BESTNODE
-			//update OLD's hueristics
-			//add SUCESSOR to OPEN, reorder OPEN based on f' value
-			//compare paths
-
-		//Else BESTNODE = SUCESSOR
-			//add sucessor to OPEN
-			//reorder OPEN
 
 
