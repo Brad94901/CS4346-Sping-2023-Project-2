@@ -10,6 +10,7 @@ Implementation of the A* algorithm on the 8-square puzzle
 #include <string>
 #include <vector>
 #include <list>
+#include <chrono>
 #include "Project2.h"
 using namespace std;
 #define ROW 3
@@ -258,9 +259,9 @@ using namespace std;
 			return 0;
 
 		for(int i = 0; i < OLD.successors.size(); i++){
-			if(OLD.successors[i].f <= OLD.f)
+			if(OLD.successors[i].g <= OLD.g)
 				continue;
-			else if(OLD.successors[i].f > OLD.f){
+			else if(OLD.successors[i].g > OLD.g){
 				OLD.successors[i].setHeur(OLD.g + 1, OLD.h);
 				OLD = OLD.successors[i];
 			}
@@ -288,16 +289,23 @@ int main(){
 	//write functions to compute hueristic values, assign to nodes
 	
 	//add initial node to OPEN
-    OPEN.push_back(init_node_1);
+    OPEN.push_back(init_node_2);
     OPEN.front().setHeur(0, distance_m_coords(init_node_1));
 
     CLOSED.clear();
     PuzzleNode BESTNODE(empty);
+
+    cout << "Manhattan Distance " << endl;
     
+    int NodeGenerated = 0;
+    int TreeDepth = 0;
+    int NodesExpanded = 0;
+    auto start = chrono::steady_clock::now();
     while (true) {
+    	
         if (OPEN.empty() == true) {
-            cout << "Failure: OPEN is empty";
-            abort();
+            cout << "Failure: OPEN is empty" << endl;
+            break;
         }
 
         int it;
@@ -317,14 +325,16 @@ int main(){
         CLOSED.push_back(BESTNODE);
         BESTNODE.printn();
         if (BESTNODE.isGoal() == true) {
-            cout << "We are finished!";
+            cout << "We are finished!" << endl;
            break;
         }
 
         BESTNODE.successors = genSuccessors(BESTNODE);
+        NodesExpanded++;
+        NodeGenerated += BESTNODE.successors.size();
         
         for (int j = 0; j < BESTNODE.successors.size(); j++ ){ //looping through all the successors
-            BESTNODE.successors[j].setHeur(BESTNODE.g + 1, brad_heuristic(BESTNODE.successors[j].board));
+            BESTNODE.successors[j].setHeur(BESTNODE.g + 1, distance_m_coords(BESTNODE.successors[j].board));
             BESTNODE.successors[j].setParent(&BESTNODE);
             int cond = 0;
 
@@ -348,10 +358,10 @@ int main(){
                 	cond++;
                 	OLD = CLOSED[i];
 
-                	if(OLD.f < BESTNODE.successors[j].f)
+                	if(OLD.g < BESTNODE.successors[j].g)
                 		BESTNODE.removeSucc(BESTNODE.successors[j]);
 
-                	if (BESTNODE.f < OLD.getParent()->f){
+                	if (BESTNODE.g < OLD.getParent()->g){
                         OLD.setParent(&BESTNODE);
                     	update_heur(OLD);
                     }
@@ -367,7 +377,16 @@ int main(){
             }
         }
 
-        } 
+        }
+        auto end = chrono::steady_clock::now();
+		auto diff = end - start;
+		cout << "Execution time: "<< chrono::duration <double, milli> (diff).count() << " ms" << endl; 
+		cout << "Nodes Generated: " << NodeGenerated <<endl;
+		cout << "Tree Depth: " << NodesExpanded <<endl;
+		cout << "Nodes Expanded: " << NodesExpanded <<endl;
+		float Branching = float(NodeGenerated) / float(NodesExpanded);
+		cout << "Branching Factor b* : " << Branching <<endl;
+
     }
 
 
